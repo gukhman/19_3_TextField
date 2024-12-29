@@ -15,6 +15,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,7 +38,6 @@ class MainActivity : ComponentActivity() {
 @SuppressLint("MutableCollectionMutableState")
 @Composable
 fun TextAdd() {
-
     Scaffold(
         content = { padding ->
             Column(
@@ -45,7 +45,10 @@ fun TextAdd() {
                     .padding(padding)
             ) {
                 var text by rememberSaveable { mutableStateOf("") }
-                var itemList by remember { mutableStateOf(mutableStateListOf<String>()) }
+                val itemList = rememberSaveable(saver = listSaver(
+                    save = { stateList -> stateList.toList() },
+                    restore = { it.toMutableStateList() }
+                )) { mutableStateListOf<String>() }
 
                 Column(
                     modifier = Modifier
@@ -107,6 +110,7 @@ fun TextAdd() {
         }
     )
 }
+
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
